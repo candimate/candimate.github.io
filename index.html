@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Candimate</title>
+  <title>Ảnh Sự Kiện – Trường THPT</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -342,14 +342,14 @@
 <header>
   <div class="tag">Ảnh Sự Kiện</div>
   <h1>Candimate <span>THPT Lộc Hiệp</span></h1>
-  <p class="subtitle">09 tháng 03, 2026 &nbsp;·&nbsp; By: Nux DEVs</p>
+  <p class="subtitle">09 tháng 03, 2026 &nbsp;·&nbsp; Nhiếp ảnh gia: NHFPV</p>
   <div class="stats">
     <div class="stat">
       <div class="stat-num" id="total-count">618</div>
       <div class="stat-label">Ảnh</div>
     </div>
     <div class="stat">
-      <div class="stat-num">JPG</div>
+      <div class="stat-num">RAW</div>
       <div class="stat-label">Chất lượng</div>
     </div>
     <div class="stat">
@@ -1121,5 +1121,87 @@ document.getElementById('lightbox').addEventListener('click', function(e) {
 // Init
 buildGallery(IMAGES);
 </script>
+
+
+
+
+<!-- ── MUSIC PLAYER ── -->
+<style>
+  #music-btn {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    z-index: 999;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  #music-btn:hover { background: var(--accent); color: #000; transform: scale(1.1); }
+  #music-btn svg { width: 20px; height: 20px; }
+  #music-btn.playing::after {
+    content: '';
+    position: absolute; inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    animation: pulse-ring 1.8s ease-out infinite;
+    opacity: 0;
+  }
+  @keyframes pulse-ring {
+    0%   { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+</style>
+
+<audio id="bg-audio" loop src="https://res.cloudinary.com/dlrax6e5x/video/upload/v1773074679/y0n5lbfghi8mj5iioahd.mp3"></audio>
+
+<button id="music-btn" title="Bật / tắt nhạc" onclick="toggleMusic()">
+  <svg id="icon-play" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M9 4l12 8-12 8V4z"/>
+  </svg>
+  <svg id="icon-pause" fill="currentColor" viewBox="0 0 24 24" style="display:none">
+    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+  </svg>
+</button>
+
+<script>
+  var audio = document.getElementById('bg-audio');
+  var btn = document.getElementById('music-btn');
+  var started = false;
+
+  // Tự phát khi người dùng chạm/click lần đầu tiên vào trang
+  function startOnFirstInteraction() {
+    if (started) return;
+    started = true;
+    audio.play().then(function() {
+      btn.classList.add('playing');
+      document.getElementById('icon-play').style.display = 'none';
+      document.getElementById('icon-pause').style.display = '';
+    }).catch(function(){});
+    document.removeEventListener('click', startOnFirstInteraction);
+    document.removeEventListener('touchstart', startOnFirstInteraction);
+  }
+  document.addEventListener('click', startOnFirstInteraction);
+  document.addEventListener('touchstart', startOnFirstInteraction);
+
+  function toggleMusic() {
+    if (audio.paused) {
+      audio.play();
+      btn.classList.add('playing');
+      document.getElementById('icon-play').style.display = 'none';
+      document.getElementById('icon-pause').style.display = '';
+    } else {
+      audio.pause();
+      btn.classList.remove('playing');
+      document.getElementById('icon-play').style.display = '';
+      document.getElementById('icon-pause').style.display = 'none';
+    }
+  }
+</script>
+
 </body>
 </html>
