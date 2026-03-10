@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/Candimate-Preview.png"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Candimate</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -67,6 +68,16 @@
     }
 
     h1 span { color: var(--accent); }
+
+    .brand-desc {
+      margin-top: 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.03em;
+      opacity: 0.85;
+      animation: fadeUp 0.6s 0.25s ease both;
+    }
 
     .subtitle {
       margin-top: 14px;
@@ -184,6 +195,17 @@
     }
 
     .photo-card.hidden { display: none; }
+
+
+    #lb-img { cursor: zoom-in; transform-origin: center center; transition: transform 0.3s ease; }
+    #lb-img.zoomed { cursor: zoom-out; transform: scale(2); }
+    .lb-zoom-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); border-radius: 8px; padding: 8px 14px;
+      font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .lb-zoom-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
 
     /* ── EMPTY STATE ── */
     .empty {
@@ -342,7 +364,8 @@
 <header>
   <div class="tag">Ảnh Sự Kiện</div>
   <h1>Candimate <span>THPT Lộc Hiệp</span></h1>
-  <p class="subtitle">09 tháng 03, 2026 &nbsp;·&nbsp; Nhiếp ảnh gia: NHFPV</p>
+  <p class="brand-desc">Candimate. Giải pháp lưu trữ đám mây miễn phí chất lượng cao cho Trường THPT Lộc Hiệp</p>
+  <p class="subtitle">09 tháng 03, 2026 &nbsp;·&nbsp; By: NUX DEVs</p>
   <div class="stats">
     <div class="stat">
       <div class="stat-num" id="total-count">618</div>
@@ -383,6 +406,13 @@
   <div class="lb-bar">
     <span id="lb-name"></span>
     <span id="lb-counter"></span>
+    <button class="lb-zoom-btn" id="zoom-btn" onclick="toggleZoom()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+      </svg>
+      Phóng to
+    </button>
     <a id="lb-download" href="#" download>
       <button class="lb-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -400,9 +430,8 @@
 
 <script>
 // ══════════════════════════════════════════════════════════
-//  ĐÂY LÀ NƠI LINK CLOUDINARY
+//  ĐÂY LÀ NƠI BẠN THÊM LINK CLOUDINARY
 //  Sau khi upload ảnh lên Cloudinary, copy link và paste vào đây
-//
 //
 //  Lưu ý: Dùng link gốc (.jpg) để nút tải về hoạt động đúng
 // ══════════════════════════════════════════════════════════
@@ -1029,7 +1058,7 @@ const IMAGES = [
 ];
 
 // ──────────────────────────────────────────────────────────
-// CANDIMATE CLOUD - NUX CLOUD
+// Phần code bên dưới không cần chỉnh sửa
 // ──────────────────────────────────────────────────────────
 
 let currentIdx = 0;
@@ -1083,6 +1112,9 @@ function navLb(dir) {
 function updateLb() {
   const img = filtered[currentIdx];
   const el = document.getElementById('lb-img');
+  el.classList.remove('zoomed');
+  const zb = document.getElementById('zoom-btn');
+  if (zb) { zb.querySelector('svg').innerHTML = '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>'; zb.childNodes[zb.childNodes.length-1].textContent = ' Phóng to'; }
   el.style.animation = 'none';
   el.offsetHeight; // reflow
   el.style.animation = 'zoomIn 0.25s ease';
@@ -1094,6 +1126,25 @@ function updateLb() {
   dl.href = img.full || img.url;
   dl.download = img.name + '.jpg';
 }
+
+
+function toggleZoom() {
+  const img = document.getElementById('lb-img');
+  const btn = document.getElementById('zoom-btn');
+  const z = img.classList.toggle('zoomed');
+  btn.querySelector('svg').innerHTML = z
+    ? '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/>'
+    : '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>';
+  btn.childNodes[btn.childNodes.length-1].textContent = z ? ' Thu nhỏ' : ' Phóng to';
+}
+
+// Click ảnh cũng zoom
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('lb-img').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleZoom();
+  });
+});
 
 // Search
 document.getElementById('search').addEventListener('input', function() {
