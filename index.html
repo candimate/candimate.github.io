@@ -383,6 +383,34 @@
       flex-shrink: 0;
     }
 
+
+    .footer-projects {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-projects-title {
+      display: block;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .footer-projects-links {
+      display: flex; justify-content: center;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .footer-projects-links a {
+      font-size: 13px; font-weight: 500;
+      color: var(--accent); text-decoration: none;
+      padding: 5px 14px; border-radius: 100px;
+      border: 1px solid rgba(59,191,176,0.3);
+      transition: all 0.2s;
+    }
+    .footer-projects-links a:hover {
+      background: rgba(59,191,176,0.1);
+      border-color: var(--accent);
+    }
+
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
@@ -488,6 +516,13 @@
   Tất cả ảnh thuộc về nhiếp ảnh gia. Không sử dụng cho mục đích thương mại.
   <br/><br/>
   <a href="privacy.html">Chính sách Quyền riêng tư</a>
+  <div class="footer-projects">
+    <span class="footer-projects-title">Dự án khác của chúng tôi</span>
+    <div class="footer-projects-links">
+      <a href="https://nuxos-dev.github.io/" target="_blank" rel="noopener">NuxOS ↗</a>
+      <a href="https://underaveos.github.io/" target="_blank" rel="noopener">Underave OS ↗</a>
+    </div>
+  </div>
 </footer>
 
 <script>
