@@ -442,11 +442,12 @@
       .sb-panel {
         top: auto !important; left: 0 !important; right: 0 !important; bottom: 58px;
         width: 100% !important; height: 0 !important;
+        bottom: 0 !important;
         border-right: none !important; border-left: none !important;
         border-top: 1px solid var(--border);
         transition: height .3s cubic-bezier(.4,0,.2,1) !important;
       }
-      .sb-panel.open { width: 100% !important; height: calc(100vh - 58px) !important; }
+      .sb-panel.open { width: 100% !important; height: 100vh !important; }
       .sb-panel-inner { width: 100% !important; }
 
       /* Settings popup: above bottom bar, centered */
@@ -1063,7 +1064,7 @@ function toggleSbPanel() {
   panelOpen = !panelOpen;
   document.getElementById('sb-panel').classList.toggle('open', panelOpen);
   document.getElementById('sb-search').classList.toggle('active', panelOpen);
-  if (panelOpen) { setTimeout(() => document.getElementById('sb-search-input').focus(), 320); buildSuggestions(); }
+  if (panelOpen) { if (window.innerWidth > 768) { setTimeout(() => document.getElementById('sb-search-input').focus(), 320); } buildSuggestions(); }
   // Close settings if open
   document.getElementById('settings-popup').classList.remove('open');
   document.getElementById('sb-settings').classList.remove('active');
