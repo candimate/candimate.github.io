@@ -609,17 +609,19 @@
     }
     .sb-suggest-carousel {
       position: relative; overflow: hidden; border-radius: 16px; flex-shrink: 0;
-      aspect-ratio: 4/3;
-      touch-action: pan-y;
+      aspect-ratio: 1/1; width: 100%;
+      touch-action: pan-x;
     }
     .sb-suggest-track {
       display: flex; height: 100%;
+      width: 100%; flex-wrap: nowrap;
       transition: transform .35s cubic-bezier(.4,0,.2,1);
       will-change: transform;
     }
     .sb-suggest-slide {
-      min-width: 100%; height: 100%;
-      position: relative; cursor: pointer; flex-shrink: 0;
+      flex: 0 0 100%; max-width: 100%;
+      height: 100%; min-width: 0;
+      position: relative; cursor: pointer; overflow: hidden;
     }
     .sb-suggest-slide img {
       width: 100%; height: 100%; object-fit: cover; display: block;
@@ -1031,24 +1033,62 @@ function buildSuggestions() {
   });
 
   goCarousel(0);
-
-  // Touch swipe
-  let startX = 0, isDragging = false;
-  carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isDragging = true; }, {passive:true});
-  carousel.addEventListener('touchend', e => {
-    if (!isDragging) return; isDragging = false;
-    const diff = startX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goCarousel(carouselIdx + (diff > 0 ? 1 : -1));
-  }, {passive:true});
-
-  // Mouse drag (desktop)
-  let mouseStartX = 0;
-  carousel.addEventListener('mousedown', e => { mouseStartX = e.clientX; });
-  carousel.addEventListener('mouseup', e => {
-    const diff = mouseStartX - e.clientX;
-    if (Math.abs(diff) > 40) goCarousel(carouselIdx + (diff > 0 ? 1 : -1));
-  });
 }
+
+// Init carousel touch/mouse once (not inside buildSuggestions to avoid stacking)
+(function initCarouselEvents() {
+  let startX = 0, startY = 0, isDragging = false;
+  document.addEventListener('touchstart', e => {
+    const carousel = document.getElementById('sb-suggest-carousel');
+    if (!carousel || !carousel.contains(e.target)) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    isDragging = true;
+  }, {passive: true});
+
+  document.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = Math.abs(e.touches[0].clientX - startX);
+    const dy = Math.abs(e.touches[0].clientY - startY);
+    // If clearly horizontal swipe, prevent page scroll
+    if (dx > dy && dx > 8) e.preventDefault();
+  }, {passive: false});
+
+  document.addEventListener('touchend', e => {
+    const carousel = document.getElementById('sb-suggest-carousel');
+    if (!isDragging || !carousel) return;
+    isDragging = false;
+    const diff = startX - e.changedTouches[0].clientX;
+    const dy = Math.abs(e.changedTouches[0].clientY - startY);
+    if (Math.abs(diff) > 30 && dy < 60) goCarousel(carouselIdx + (diff > 0 ? 1 : -1));
+  }, {passive: true});
+
+  // Mouse drag desktop
+  let mouseStartX = 0;
+  document.addEventListener('mousedown', e => {
+    const carousel = document.getElementById('sb-suggest-carousel');
+    if (carousel && carousel.contains(e.target)) mouseStartX = e.clientX;
+    else mouseStartX = 0;
+  });
+  document.addEventListener('mouseup', e => {
+    if (!mouseStartX) return;
+    const diff = mouseStartX - e.clientX;
+    mouseStartX = 0;
+    if (Math.abs(diff) > 30) goCarousel(carouselIdx + (diff > 0 ? 1 : -1));
+  });
+
+  // Mouse wheel on desktop
+  let wheelCooldown = false;
+  document.addEventListener('wheel', e => {
+    const carousel = document.getElementById('sb-suggest-carousel');
+    if (!carousel || !carousel.contains(e.target)) return;
+    e.preventDefault();
+    if (wheelCooldown) return;
+    wheelCooldown = true;
+    goCarousel(carouselIdx + (e.deltaY > 0 || e.deltaX > 0 ? 1 : -1));
+    setTimeout(() => { wheelCooldown = false; }, 400);
+  }, { passive: false });
+})();
 
 function goCarousel(idx) {
   const n = carouselItems.length;
