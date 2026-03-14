@@ -643,12 +643,15 @@
       padding: 10px 0 4px; flex-shrink: 0;
     }
     .sb-dot {
-      width: 6px; height: 6px; border-radius: 50%;
+      width: 6px; height: 6px; border-radius: 100px;
       background: var(--muted); opacity: .4;
-      transition: opacity .2s, transform .2s;
-      cursor: pointer;
+      transition: opacity .25s, width .25s cubic-bezier(.2,0,0,1), background .25s;
+      cursor: pointer; flex-shrink: 0;
     }
-    .sb-dot.active { opacity: 1; transform: scale(1.3); background: var(--accent); }
+    .sb-dot.active {
+      opacity: 1; width: 22px;
+      background: var(--accent);
+    }
   </style>
 </head>
 <body class="dark">
