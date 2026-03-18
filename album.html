@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Album — Candimate</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/Candimate-Preview__1_-removebg-preview.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="dark">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <button class="sb-btn" id="sb-search" title="Tìm kiếm" onclick="toggleSbPanel()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </button>
+  <button class="sb-btn" id="sb-home" title="Trang chủ" onclick="location.href='index.html'">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
+  <div class="sb-spacer"></div>
+  <button class="sb-btn" id="music-btn" title="Nhạc nền" onclick="toggleMusic()">
+    <svg id="icon-play" fill="currentColor" viewBox="0 0 24 24"><path d="M9 4l12 8-12 8V4z"/></svg>
+    <svg id="icon-pause" fill="currentColor" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+  </button>
+  <button class="sb-btn" id="sb-settings" title="Cài đặt" onclick="toggleSettings()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</aside>
+
+<!-- SETTINGS -->
+<div class="settings-popup" id="settings-popup">
+  <div class="settings-title">Settings</div>
+  <div class="settings-row">
+    <label for="dark-toggle">Dark mode</label>
+    <label class="toggle-switch"><input type="checkbox" id="dark-toggle" onchange="applyTheme(this.checked)"/><span class="toggle-track"></span></label>
+  </div>
+  <div class="settings-row">
+    <label for="autoplay-toggle">Auto play audio</label>
+    <label class="toggle-switch"><input type="checkbox" id="autoplay-toggle" onchange="setAutoplay(this.checked)"/><span class="toggle-track"></span></label>
+  </div>
+  <div class="settings-row" id="rightsb-row">
+    <label for="rightsb-toggle">Right sidebar</label>
+    <label class="toggle-switch"><input type="checkbox" id="rightsb-toggle" onchange="setSidebarRight(this.checked)"/><span class="toggle-track"></span></label>
+  </div>
+</div>
+
+<!-- MUSIC PICKER -->
+<div class="music-picker" id="music-picker">
+  <div class="music-picker-title">🎵 Chọn nhạc nền</div>
+  <div class="music-track active" id="track-0" onclick="selectTrack(0)">
+    <div class="music-track-icon">🌤️</div>
+    <div class="music-track-info"><div class="music-track-name">Trời hửng nắng cũ</div><div class="music-track-artist">Uông Tô Lang</div></div>
+    <div class="music-track-playing"><span></span><span></span><span></span></div>
+  </div>
+  <div class="music-track" id="track-1" onclick="selectTrack(1)">
+    <div class="music-track-icon">💙</div>
+    <div class="music-track-info"><div class="music-track-name">In Love</div><div class="music-track-artist">Low G</div></div>
+    <div class="music-track-playing"><span></span><span></span><span></span></div>
+  </div>
+  <div class="music-picker-footer">
+    <button class="repeat-btn" id="repeat-all-btn" onclick="setRepeatMode('all')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Lặp 2 bài
+    </button>
+    <button class="repeat-btn" id="repeat-one-btn" onclick="setRepeatMode('one')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="10" y1="10" x2="12" y2="8"/></svg>Lặp 1 bài
+    </button>
+  </div>
+</div>
+
+<!-- SEARCH PANEL -->
+<div class="sb-panel" id="sb-panel">
+  <div class="sb-panel-inner">
+    <p class="sb-panel-label">Tìm kiếm</p>
+    <div class="sb-search-box">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="sb-search-input" placeholder="Nhập tên ảnh..." autocomplete="off"/>
+    </div>
+    <div id="sb-suggestions" class="sb-suggestions">
+      <p class="sb-suggest-label">Gợi ý ngẫu nhiên</p>
+      <div class="sb-suggest-carousel" id="sb-suggest-carousel">
+        <div class="sb-suggest-track" id="sb-suggest-track"></div>
+      </div>
+      <div class="sb-suggest-dots" id="sb-suggest-dots"></div>
+    </div>
+    <div class="sb-search-results" id="sb-results" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ALBUM HEADER (set by JS) -->
+<header id="album-header" style="padding:48px 24px 40px">
+  <div class="tag">Ảnh Sự Kiện</div><br/>
+  <div class="h1-wrap">
+    <img class="header-logo" src="https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/Candimate-Preview__1_-removebg-preview.png" alt="Logo"/>
+    <h1 id="album-title">Đang tải...</h1>
+  </div>
+  <p class="subtitle" id="album-date"></p>
+  <div class="stats" style="margin-top:24px">
+    <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-label">Ảnh</div></div>
+    <div class="stat"><div class="stat-num">JPG</div><div class="stat-label">Chất lượng</div></div>
+    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Tải về</div></div>
+  </div>
+  <!-- Back button -->
+  <a href="index.html" style="position:absolute;top:16px;left:64px;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;text-decoration:none;">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Tất cả album
+  </a>
+</header>
+
+<!-- GALLERY (rendered by JS) -->
+<div class="album-section">
+  <div class="gallery" id="gallery"></div>
+  <div class="empty" id="empty">Không tìm thấy ảnh nào 😔</div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <div class="lb-img-wrap">
+    <button class="lb-nav lb-prev" onclick="navLb(-1)">‹</button>
+    <img id="lb-img" src="" alt=""/>
+    <button class="lb-nav lb-next" onclick="navLb(1)">›</button>
+  </div>
+  <div class="lb-bar">
+    <span id="lb-name"></span>
+    <span id="lb-counter"></span>
+    <button class="lb-zoom-btn" id="zoom-btn" onclick="toggleZoom()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg> Phóng to
+    </button>
+    <a id="lb-download" href="#" download>
+      <button class="lb-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Tải ảnh
+      </button>
+    </a>
+  </div>
+</div>
+
+<audio id="bg-audio" loop></audio>
+<script src="js/albums.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
