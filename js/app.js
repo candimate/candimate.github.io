@@ -411,7 +411,8 @@ function setSidebarRight(enabled) {
    MUSIC PLAYER
 ══════════════════════════════════════ */
 const TRACKS = [
-  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1773074679/y0n5lbfghi8mj5iioahd.mp3', title: 'Trời hửng nắng cũ', artist: 'Uông Tô Lang', icon: '🌤️' },
+  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1773745082/ujbdge0viiuektd7rztu.m4a', title: 'một đời (Solo Violin)', artist: '14 Casper', icon: '💙' },
+  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1773074679/y0n5lbfghi8mj5iioahd.mp3', title: 'Trời hửng nắng', artist: 'Uông Tô Lang', icon: '🌤️' },
   { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1773375040/ue27qwgc4hq46saugdfa.mp3', title: 'In Love',           artist: 'Low G',         icon: '💙' },
 ];
 
