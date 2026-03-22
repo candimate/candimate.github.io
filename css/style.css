@@ -47,7 +47,7 @@ body {
   color: var(--text);
   /* Fixed background wallpaper */
   background:
-    url('https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/miradouro-do-ninho-da-manta-madeira-portugal-kw.jpg')
+    url('https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/sgs-beanland-library-05.jpg')
     center/cover fixed no-repeat;
   /* Space for floating sidebar */
   padding-left: calc(var(--sb-w) + var(--sb-gap) * 2 + 8px);
