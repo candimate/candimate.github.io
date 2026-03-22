@@ -8,13 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
-<body class="dark">
+<body>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
 
-  <!-- Logo = Home (ẩn trên mobile qua CSS) -->
-  <button class="sb-logo-btn" onclick="scrollToTop()" title="Candimate · Về đầu trang">
+  <!-- Logo = Home button (ẩn trên mobile qua CSS) -->
+  <button class="sb-logo-btn" onclick="scrollToTop()" title="Candimate — Về đầu trang">
     <img src="https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/Candimate-Preview__1_-removebg-preview.png" alt="Candimate"/>
   </button>
 
@@ -60,12 +60,10 @@
     <label class="toggle-switch"><input type="checkbox" id="rightsb-toggle" onchange="setSidebarRight(this.checked)"/><span class="toggle-track"></span></label>
   </div>
 
-  <!-- Album list -->
+  <!-- Album list — JS sẽ render vào đây -->
   <div class="settings-divider"></div>
   <div class="settings-album-title">📂 Chuyển đến album</div>
-  <div id="settings-album-list">
-    <!-- Rendered by app.js after data loads -->
-  </div>
+  <div id="settings-album-list"></div>
 </div>
 
 <!-- MUSIC PICKER -->
@@ -138,7 +136,8 @@
 <!-- FOOTER -->
 <footer>
   Tất cả ảnh thuộc về nhiếp ảnh gia. Không sử dụng cho mục đích thương mại.
-  &nbsp;·&nbsp; <a href="privacy.html">Chính sách Quyền riêng tư</a>
+  <br/><br/>
+  <a href="privacy.html">Chính sách Quyền riêng tư</a>
   <div class="footer-projects">
     <span class="footer-projects-title">Dự án khác của chúng tôi</span>
     <div class="footer-projects-links">
