@@ -43,13 +43,7 @@ const WALLPAPERS = [
 ];
 
 (function initWallpaper() {
-  // Giữ nguyên ảnh trong cùng 1 session, đổi khi F5 hoặc mở tab mới
-  const key = 'candimate_wallpaper';
-  let url = sessionStorage.getItem(key);
-  if (!url || !WALLPAPERS.includes(url)) {
-    url = WALLPAPERS[Math.floor(Math.random() * WALLPAPERS.length)];
-    sessionStorage.setItem(key, url);
-  }
+  const url = WALLPAPERS[Math.floor(Math.random() * WALLPAPERS.length)];
   document.body.style.backgroundImage = `url('${url}')`;
 })();
 /* ── STATE ── */
