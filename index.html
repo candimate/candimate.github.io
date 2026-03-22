@@ -12,39 +12,59 @@
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
+
+  <!-- Logo = Home (ẩn trên mobile qua CSS) -->
+  <button class="sb-logo-btn" onclick="scrollToTop()" title="Candimate · Về đầu trang">
+    <img src="https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/Candimate-Preview__1_-removebg-preview.png" alt="Candimate"/>
+  </button>
+
   <button class="sb-btn" id="sb-search" title="Tìm kiếm" onclick="toggleSbPanel()">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
   </button>
+
   <button class="sb-btn" id="sb-home" title="Trang chính" onclick="scrollToTop()">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
   </button>
-  <a class="sb-btn sb-upload-btn" id="sb-upload" title="Upload ảnh" href="https://tally.so/r/xXZWEJ" target="_blank" rel="noopener">
-    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  </a>
+
   <div class="sb-spacer"></div>
+
+  <a class="sb-btn sb-upload-btn" id="sb-upload" title="Upload ảnh" href="https://tally.so/r/xXZWEJ" target="_blank" rel="noopener">
+    <svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </a>
+
   <button class="sb-btn" id="music-btn" title="Nhạc nền" onclick="toggleMusic()">
     <svg id="icon-play" fill="currentColor" viewBox="0 0 24 24"><path d="M9 4l12 8-12 8V4z"/></svg>
     <svg id="icon-pause" fill="currentColor" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
   </button>
+
   <button class="sb-btn" id="sb-settings" title="Cài đặt" onclick="toggleSettings()">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
+
 </aside>
 
-<!-- SETTINGS -->
+<!-- SETTINGS POPUP -->
 <div class="settings-popup" id="settings-popup">
-  <div class="settings-title">Settings</div>
+  <div class="settings-title">Cài đặt</div>
+
   <div class="settings-row">
     <label for="dark-toggle">Dark mode</label>
     <label class="toggle-switch"><input type="checkbox" id="dark-toggle" onchange="applyTheme(this.checked)"/><span class="toggle-track"></span></label>
   </div>
   <div class="settings-row">
-    <label for="autoplay-toggle">Auto play audio</label>
+    <label for="autoplay-toggle">Tự phát nhạc</label>
     <label class="toggle-switch"><input type="checkbox" id="autoplay-toggle" onchange="setAutoplay(this.checked)"/><span class="toggle-track"></span></label>
   </div>
   <div class="settings-row" id="rightsb-row">
-    <label for="rightsb-toggle">Right sidebar</label>
+    <label for="rightsb-toggle">Sidebar phải</label>
     <label class="toggle-switch"><input type="checkbox" id="rightsb-toggle" onchange="setSidebarRight(this.checked)"/><span class="toggle-track"></span></label>
+  </div>
+
+  <!-- Album list -->
+  <div class="settings-divider"></div>
+  <div class="settings-album-title">📂 Chuyển đến album</div>
+  <div id="settings-album-list">
+    <!-- Rendered by app.js after data loads -->
   </div>
 </div>
 
@@ -90,22 +110,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
-<header>
-  <div class="tag">Ảnh Sự Kiện</div><br/>
-  <div class="h1-wrap">
-    <img class="header-logo" src="https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/Candimate-Preview__1_-removebg-preview.png" alt="Candimate Logo"/>
-    <h1>Candimate</h1>
-  </div>
-  <p class="brand-desc">Còn gì ý nghĩa hơn khi những khoảnh khắc đẹp nhất, rực rỡ nhất đều được gói trọn tại đây</p>
-  <p class="subtitle">09 tháng 03, 2026 &nbsp;·&nbsp; Phát triển bởi: Đỗ Tất Vinh</p>
-  <div class="stats">
-    <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-label">Ảnh</div></div>
-    <div class="stat"><div class="stat-num">JPG</div><div class="stat-label">Chất lượng</div></div>
-    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Tải về</div></div>
-  </div>
-</header>
-
 <!-- ALBUMS (rendered by JS) -->
 <div id="albums-container"></div>
 
@@ -134,8 +138,7 @@
 <!-- FOOTER -->
 <footer>
   Tất cả ảnh thuộc về nhiếp ảnh gia. Không sử dụng cho mục đích thương mại.
-  <br/><br/>
-  <a href="privacy.html">Chính sách Quyền riêng tư</a>
+  &nbsp;·&nbsp; <a href="privacy.html">Chính sách Quyền riêng tư</a>
   <div class="footer-projects">
     <span class="footer-projects-title">Dự án khác của chúng tôi</span>
     <div class="footer-projects-links">
