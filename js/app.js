@@ -35,6 +35,23 @@ function debounce(fn, ms) {
   let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
 }
 
+
+/* ── WALLPAPERS — thêm URL vào đây để có thêm ảnh nền ── */
+const WALLPAPERS = [
+  'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/cap-1.jpg',
+  'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/cap2.jpg',
+];
+
+(function initWallpaper() {
+  // Giữ nguyên ảnh trong cùng 1 session, đổi khi F5 hoặc mở tab mới
+  const key = 'candimate_wallpaper';
+  let url = sessionStorage.getItem(key);
+  if (!url || !WALLPAPERS.includes(url)) {
+    url = WALLPAPERS[Math.floor(Math.random() * WALLPAPERS.length)];
+    sessionStorage.setItem(key, url);
+  }
+  document.body.style.backgroundImage = `url('${url}')`;
+})();
 /* ── STATE ── */
 let albumData  = {};
 let filtered   = [];
