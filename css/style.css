@@ -12,7 +12,7 @@
   --text:    #1a2332;
   --muted:   rgba(0,0,0,.42);
 
-  /* Glass recipe — LIGHT (Opera Air style) */
+  /* Glass recipe — LIGHT (Air style) */
   --glass-bg:      rgba(245,248,250,.82);
   --glass-border:  rgba(0,0,0,.08);
   --glass-blur:    blur(24px) saturate(1.8);
@@ -46,9 +46,7 @@ body {
   min-height: 100vh;
   color: var(--text);
   /* Fixed background wallpaper */
-  background:
-    url('https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/sgs-beanland-library-05.jpg')
-    center/cover fixed no-repeat;
+  background: center/cover fixed no-repeat;
   /* Space for floating sidebar */
   padding-left: calc(var(--sb-w) + var(--sb-gap) * 2 + 8px);
 }
