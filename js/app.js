@@ -365,7 +365,7 @@ function applyTheme(isDark) {
   const t = $('dark-toggle'); if (t) t.checked = isDark;
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
-(function() { applyTheme(localStorage.getItem('theme') !== 'light'); })();
+(function() { applyTheme(localStorage.getItem('theme') === 'dark'); })();
 
 function setAutoplay(e) { localStorage.setItem('autoplay', e ? 'on' : 'off'); }
 function setSidebarRight(e) { document.body.classList.toggle('sidebar-right', e); localStorage.setItem('sidebarRight', e ? 'on' : 'off'); }
