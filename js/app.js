@@ -61,7 +61,6 @@ function loadData() {
     )
   ).then(() => { buildAllSections(); buildSuggestions(); });
 }
-}
 loadData();
 
 /* ══════════════════════════════════════
