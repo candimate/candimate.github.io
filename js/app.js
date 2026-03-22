@@ -248,7 +248,24 @@ $('sb-search-input')?.addEventListener('input', debounce(function() {
   const res = $('sb-results'), sugg = $('sb-suggestions');
   if (!q) { res.style.display = 'none'; res.innerHTML = ''; sugg.style.display = ''; return; }
   res.style.display = ''; sugg.style.display = 'none';
-  const hits = getAllPhotos().filter(({ p }) => p.name.toLowerCase().includes(q));
+
+  // Normalize query: extract pure number if user types e.g. "49" or "049"
+  const qNum = q.replace(/[^0-9]/g, ''); // digits only from query
+
+  const hits = getAllPhotos().filter(({ p }) => {
+    const name = p.name.toLowerCase();
+    if (name.includes(q)) return true;
+    // If query contains digits, also match against the number in the name
+    if (qNum) {
+      const nameNum = name.replace(/[^0-9]/g, ''); // digits from name e.g. "049"
+      // Match: "49" matches "049" (parseInt strips leading zeros)
+      if (nameNum && parseInt(nameNum, 10) === parseInt(qNum, 10)) return true;
+      // Also match substring: "4" matches "049", "146", etc.
+      if (nameNum.includes(qNum)) return true;
+    }
+    return false;
+  });
+
   if (!hits.length) { res.innerHTML = '<p class="sb-sr-hint">Không tìm thấy 😔</p>'; return; }
   const frag = document.createDocumentFragment();
   hits.slice(0, 50).forEach(({ p, label, albumId }) => {
@@ -260,7 +277,7 @@ $('sb-search-input')?.addEventListener('input', debounce(function() {
     frag.appendChild(el);
   });
   res.innerHTML = ''; res.appendChild(frag);
-}, 200));
+}, 100));
 
 /* ══════════════════════════════════════
    SUGGESTION CAROUSEL
