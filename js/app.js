@@ -61,7 +61,37 @@ function loadData() {
     )
   ).then(() => { buildAllSections(); buildSuggestions(); });
 }
+}
 loadData();
+
+/* ══════════════════════════════════════
+   SETTINGS ALBUM LIST
+══════════════════════════════════════ */
+function buildSettingsAlbumList() {
+  const list = $('settings-album-list');
+  if (!list) return;
+  list.innerHTML = '';
+  ALBUMS.forEach(album => {
+    const photos = albumData[album.id] || [];
+    const item = document.createElement('div');
+    item.className = 'settings-album-item';
+    item.innerHTML = `
+      <span>${album.emoji} ${album.title}</span>
+      <span class="settings-album-count">${photos.length} ảnh</span>`;
+    item.addEventListener('click', () => scrollToAlbum(album.id));
+    list.appendChild(item);
+  });
+}
+
+function scrollToAlbum(id) {
+  closeSettings();
+  setTimeout(() => {
+    const target = $(id);
+    if (!target) return;
+    const y = target.getBoundingClientRect().top + window.scrollY - 16;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }, 220); // wait for settings close animation
+}
 
 /* ══════════════════════════════════════
    GALLERY — IntersectionObserver lazy load
@@ -98,8 +128,7 @@ function buildAllSections() {
     container.appendChild(section);
     renderGallery(album.id, photos);
   });
-  const el = $('total-count');
-  if (el) el.textContent = ALBUMS.reduce((s, a) => s + (albumData[a.id]?.length || 0), 0);
+  buildSettingsAlbumList();
 }
 
 function renderGallery(albumId, photos) {
