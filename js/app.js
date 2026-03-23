@@ -407,8 +407,8 @@ function setSidebarRight(e) { document.body.classList.toggle('sidebar-right', e)
    MUSIC PLAYER
 ══════════════════════════════════════ */
 const TRACKS = [
-  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1773074679/y0n5lbfghi8mj5iioahd.mp3' },
-  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1773375040/ue27qwgc4hq46saugdfa.mp3' },
+  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1774274445/ypnxtx3d0yio7tgkbuai.mp3' },
+  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1774274730/kmwdpqkvfncgwqeuusps.mp3' },
 ];
 let trackIdx = parseInt(localStorage.getItem('trackIdx') || '0');
 let repeatMode = localStorage.getItem('repeatMode') || 'all';
