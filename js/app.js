@@ -246,8 +246,8 @@ function getAllPhotos() {
 $('sb-search-input')?.addEventListener('input', debounce(function() {
   const q = this.value.trim().toLowerCase();
   const res = $('sb-results'), sugg = $('sb-suggestions');
-  if (!q) { res.style.display = 'none'; res.innerHTML = ''; sugg.style.display = 'flex'; return; }
-  res.style.display = 'flex'; sugg.style.display = 'none';
+  if (!q) { res.style.display = 'none'; res.innerHTML = ''; sugg.style.display = ''; return; }
+  res.style.display = ''; sugg.style.display = 'none';
 
   // Normalize query: extract pure number if user types e.g. "49" or "049"
   const qNum = q.replace(/[^0-9]/g, ''); // digits only from query
