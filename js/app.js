@@ -6,6 +6,13 @@
 /* ── ALBUM CONFIG ── */
 const ALBUMS = [
   {
+    id:      'album-khai_mac_giai_bong_da_nam_2026',
+    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/khai_mac_giai_bong_da_nam_2026.json',
+    emoji:   '⚽',
+    title:   'KHAI MẠC GIẢI BÓNG ĐÁ NAM HỌC SINH',
+    date:    '21/03/2026',
+  },
+  {
     id:      'album-soi-noi-lop-cam-tinh-doan',
     jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/soi_noi_lop_cam_tinh_doan.json',
     emoji:   '🇻🇳',
