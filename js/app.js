@@ -6,6 +6,13 @@
 /* ── ALBUM CONFIG ── */
 const ALBUMS = [
   {
+    id:      'album-ngay-chay-olympic-vi-suc-khoe-toan-dan',
+    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/ngay_chay_olympic_vi_suc_khoe_toan_dan.json',
+    emoji:   '🏃🏻',
+    title:   'Chương trình Ngày chạy Olympic vì sức khỏe toàn dân',
+    date:    '22/03/2026',
+  },
+  {
     id:      'album-khai-mac-giai-bong-da-nam',
     jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/khai_mac_giai_bong_da_nam_2026.json',
     emoji:   '⚽',
