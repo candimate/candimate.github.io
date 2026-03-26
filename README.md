@@ -1,0 +1,59 @@
+# 📸 Candimate
+
+> *“Còn gì ý nghĩa hơn khi những khoảnh khắc rực rỡ nhất đều được gói trọn tại đây.”*
+
+**Candimate** là một nền tảng lưu trữ và chia sẻ ảnh học đường mã nguồn mở. Dự án được xây dựng với mục tiêu lưu giữ những khoảnh khắc thanh xuân một cách bền vững, đảm bảo chất lượng cao và không bị thất lạc theo thời gian.
+
+![Version](https://img.shields.io/badge/Version-2026.3-00f2fe?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Open_Source-green?style=for-the-badge)
+![UI](https://img.shields.io/badge/UI-Glassmorphism-blue?style=for-the-badge)
+![Platform](https://img.shields.io/badge/Platform-GitHub_Pages-black?style=for-the-badge)
+
+---
+
+## 🌿 Giới thiệu
+
+Candimate ra đời để giải quyết những vấn đề thực tế trong môi trường học đường:
+- ❌ **Thất lạc dữ liệu:** Ảnh sự kiện lưu trên Google Drive thường dễ bị mất link hoặc quá hạn.
+- ❌ **Giảm chất lượng:** Đăng ảnh qua Facebook/Zalo bị nén mạnh, làm mất đi độ sắc nét của kỷ niệm.
+- ❌ **Thiếu tổ chức:** Không có một hệ thống lưu trữ tập trung và lâu dài.
+
+👉 **Candimate** xuất hiện như một **“Pinterest của học đường”** – nơi lưu giữ ảnh chất lượng cao, có tổ chức và tồn tại mãi với thời gian.
+
+---
+
+## ✨ Tính năng nổi bật
+
+* 📁 **Gallery Album:** Quản lý ảnh thông minh theo từng sự kiện dựa trên cấu trúc JSON.
+* ⚡ **Siêu tốc độ:** Tối ưu hóa tốc độ tải với CDN mạnh mẽ từ **Cloudinary**.
+* 🎨 **Giao diện Apple-inspired:** Thiết kế **Glassmorphism** (kính mờ) hiện đại, sang trọng.
+* 🏫 **Chất học đường:** Background bảng xanh thân thuộc, gợi nhớ không gian lớp học.
+* 🔍 **Smart Search:** Tìm kiếm và gợi ý ảnh nhanh chóng.
+* ❤️ **Favorite System:** Lưu ảnh yêu thích cá nhân hóa qua `localStorage` (Không cần đăng nhập).
+* 📱 **Responsive:** Hiển thị hoàn hảo trên cả Desktop và Mobile (với thanh Bottom Bar vuốt chạm).
+* 🚀 **Zero Backend:** Chạy hoàn toàn dưới dạng web tĩnh (Static Site), bảo mật và dễ triển khai.
+
+---
+
+## 🧠 Công nghệ sử dụng
+
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla JS).
+- **Data Engine:** JSON (Đóng vai trò như một Database linh hoạt).
+- **Deployment:** [GitHub Pages](https://pages.github.com/).
+- **Image Hosting:** [Cloudinary](https://cloudinary.com/).
+
+---
+
+## 📂 Cấu trúc dự án
+
+```text
+/candimate
+├── assets/
+│   ├── css/            # Giao diện Glassmorphism & Layout
+│   └── js/             # Logic xử lý ảnh, LocalStorage & UI
+├── data/               # Các file "Database" JSON
+│   ├── net_dep_hoc_duong.json
+│   ├── chu_nhat_xanh.json
+│   └── tuoi_tre_thpt_loc_hiep_15-3.json
+├── index.html          # Trang chủ chính
+└── README.md           # Tài liệu dự án
