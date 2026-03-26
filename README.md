@@ -60,6 +60,7 @@ Candimate ra đời để giải quyết những vấn đề thực tế trong m
 
 ---
 
+**Hướng dẫn**
 ### 🚀 Cách sử dụng & Triển khai
 
 ## 1. Khởi tạo dự án
