@@ -169,6 +169,7 @@ body.sidebar-right .music-picker   { left: auto; right: calc(var(--sb-w) + var(-
   pointer-events: none;
 
   transition: width .3s cubic-bezier(.4,0,.2,1), opacity .2s, box-shadow .2s;
+  overscroll-behavior: contain;
 }
 .sb-panel.open {
   width: 320px;
@@ -215,7 +216,7 @@ body.dark .sb-search-box:focus-within { background: rgba(255,255,255,.1); }
 .sb-search-box input::placeholder { color: var(--muted); }
 
 /* Results */
-.sb-search-results { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+.sb-search-results { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; overscroll-behavior: contain; }
 .sb-search-results::-webkit-scrollbar { width: 3px; }
 .sb-search-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
 .sb-sr-item {
@@ -269,6 +270,8 @@ body.dark .sb-sr-item:hover { background: rgba(255,255,255,.07); }
   border: 1px solid var(--glass-border);
   border-radius: var(--panel-r);
   box-shadow: var(--glass-shadow);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .settings-popup.open { display: block; animation: fadeUp .18s ease; }
 
@@ -318,6 +321,8 @@ body.dark .settings-album-item:hover { background: rgba(255,255,255,.08); }
   bottom: calc(var(--sb-gap) + 60px);
   width: 240px; padding: 14px;
   display: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
