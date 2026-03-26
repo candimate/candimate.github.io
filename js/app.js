@@ -6,6 +6,13 @@
 /* ── ALBUM CONFIG ── */
 const ALBUMS = [
   {
+    id:      'album-lan-toa-van-hoa-giao-thong',
+    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/lan%20_toa_van_hoa_giao_thong.json',
+    emoji:   '🛵',
+    title:   'Lan Tỏa Văn Hóa Giao Thông',
+    date:    '17/03/2026',
+  },
+  {
     id:      'album-bau-cu',
     jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/tuoi_tre_thpt_loc_hiep_15-3.json',
     emoji:   '🗳️',
