@@ -60,9 +60,9 @@ Candimate ra đời để giải quyết những vấn đề thực tế trong m
 
 ---
 
-## 🚀 Cách sử dụng & Triển khai
+### 🚀 Cách sử dụng & Triển khai
 
-### 1. Khởi tạo dự án
+## 1. Khởi tạo dự án
 Sử dụng Git để sao chép mã nguồn về máy cục bộ:
 ```bash
 git clone https://github.com/your-username/candimate
