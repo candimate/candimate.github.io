@@ -6,7 +6,7 @@
 /* ── ALBUM CONFIG ── */
 const ALBUMS = [
   {
-    id:      'album-khai-mac-giai-bong-da-nam-2026',
+    id:      'album-khai-mac-giai-bong-da-nam',
     jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/khai_mac_giai_bong_da_nam_2026.json',
     emoji:   '⚽',
     title:   'KHAI MẠC GIẢI BÓNG ĐÁ NAM HỌC SINH',
