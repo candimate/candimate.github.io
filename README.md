@@ -105,7 +105,7 @@ Dự án được tối ưu hóa cho **GitHub Pages**:
 
 ## 🎯 Mục tiêu dự án
 
-Candimate không chỉ đơn thuần là một thư viện ảnh, mà là một **Nền tảng lưu giữ ký ức**. Chúng mình hướng tới việc tạo ra một không gian bền vững, nơi mà nhiều năm sau, các bạn vẫn có thể tìm thấy nụ cười rực rỡ thời học sinh của mình với chất lượng tốt nhất.
+Candimate không chỉ đơn thuần là một thư viện ảnh, mà là một **Nền tảng lưu giữ ký ức**. Tôi hướng tới việc tạo ra một không gian bền vững, nơi mà nhiều năm sau, các bạn vẫn có thể tìm thấy nụ cười rực rỡ thời học sinh của mình với chất lượng tốt nhất.
 
 ---
 
