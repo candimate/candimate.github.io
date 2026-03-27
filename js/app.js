@@ -6,8 +6,8 @@
 /* ── ALBUM CONFIG ── */
 const ALBUMS = [
   {
-    id:      'album-ngay-chay-olympic-vi-suc-khoe-toan-dan',
-    jsonUrl: 'https://github.com/candimate/candimate.github.io/blob/main/data/rung_chuong_vang.json',
+    id:      'album-rung-chuong-vang',
+    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/rung_chuong_vang.json',
     emoji:   '🔔',
     title:   'SÔI NỔI CUỘC THI “RUNG CHUÔNG VÀNG”',
     date:    '23/03/2026',
