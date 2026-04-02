@@ -1,6 +1,5 @@
 /* ════════════════════════════════════
-   CANDIMATE — app.js  (optimized)
-   Thêm album: thêm 1 object vào ALBUMS
+   CANDIMATE — app.js
    ════════════════════════════════════ */
 
 /* ── ALBUM CONFIG ── */
@@ -71,7 +70,7 @@ function debounce(fn, ms) {
 }
 
 
-/* ── WALLPAPERS — thêm URL vào đây để có thêm ảnh nền ── */
+/* ── WALLPAPERS ── */
 const WALLPAPERS = [
   'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/cap-1.jpg',
   'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/cap2.jpg',
