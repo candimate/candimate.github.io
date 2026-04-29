@@ -2,65 +2,8 @@
    CANDIMATE — app.js
    ════════════════════════════════════ */
 
-/* ── ALBUM CONFIG ── */
-const ALBUMS = [
-  {
-    id:      'album-rung-chuong-vang',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/rung_chuong_vang.json',
-    emoji:   '🔔',
-    title:   'SÔI NỔI CUỘC THI “RUNG CHUÔNG VÀNG”',
-    date:    '23/03/2026',
-  },
-  {
-    id:      'album-ngay-chay-olympic-vi-suc-khoe-toan-dan',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/ngay_chay_olympic_vi_suc_khoe_toan_dan.json',
-    emoji:   '🏃🏻',
-    title:   'Chương trình Ngày chạy Olympic vì sức khỏe toàn dân',
-    date:    '22/03/2026',
-  },
-  {
-    id:      'album-khai-mac-giai-bong-da-nam',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/khai_mac_giai_bong_da_nam_2026.json',
-    emoji:   '⚽',
-    title:   'KHAI MẠC GIẢI BÓNG ĐÁ NAM HỌC SINH',
-    date:    '21/03/2026',
-  },
-  {
-    id:      'album-soi-noi-lop-cam-tinh-doan',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/soi_noi_lop_cam_tinh_doan.json',
-    emoji:   '🇻🇳',
-    title:   'Sôi Nổi Lớp Cảm Tình Đoàn',
-    date:    '21/03/2026',
-  },
-  {
-    id:      'album-lan-toa-van-hoa-giao-thong',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/lan%20_toa_van_hoa_giao_thong.json',
-    emoji:   '🛵',
-    title:   'Lan Tỏa Văn Hóa Giao Thông',
-    date:    '17/03/2026',
-  },
-  {
-    id:      'album-bau-cu',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/tuoi_tre_thpt_loc_hiep_15-3.json',
-    emoji:   '🗳️',
-    title:   'Tuổi trẻ THPT Lộc Hiệp hỗ trợ bầu cử',
-    date:    '15/03/2026',
-  },
-  {
-    id:      'album-net-dep',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/net_dep_hoc_duong.json',
-    emoji:   '📸',
-    title:   'Nét đẹp học đường',
-    date:    '09/03/2026',
-  },
-  {
-    id:      'album-chu-nhat',
-    jsonUrl: 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/data/chu_nhat_xanh.json',
-    emoji:   '🌿',
-    title:   'Chủ nhật xanh',
-    date:    '08/03/2026',
-  },
-];
+/* ── CONFIG ── */
+const BASE_URL = 'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main';
 
 /* ── HELPERS ── */
 const $  = id  => document.getElementById(id);
@@ -68,22 +11,33 @@ const $$ = sel => document.querySelectorAll(sel);
 function debounce(fn, ms) {
   let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
 }
-
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = String(str);
+  return d.innerHTML;
+}
+function albumFileToId(file) {
+  return 'album-' + file.replace('.json', '').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+}
 
 /* ── WALLPAPERS ── */
 const WALLPAPERS = [
-  'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/cap-1.jpg',
-  'https://raw.githubusercontent.com/candimate/candimate.github.io/refs/heads/main/cap2.jpg',
+  `${BASE_URL}/cap-1.jpg`,
+  `${BASE_URL}/cap2.jpg`,
 ];
-
 (function initWallpaper() {
   const url = WALLPAPERS[Math.floor(Math.random() * WALLPAPERS.length)];
   document.body.style.backgroundImage = `url('${url}')`;
 })();
+
 /* ── STATE ── */
-let albumData  = {};
-let filtered   = [];
-let currentIdx = 0;
+let YEARS       = [];    // e.g. ["2026"]
+let currentYear = null;  // e.g. "2026"
+let ALBUMS      = [];    // metadata từ /data/2026/index.json
+let albumData   = {};    // { albumId: [photos] }
+let allPhotos   = [];    // toàn bộ ảnh của năm hiện tại, đã shuffle
+let filtered    = [];    // context cho lightbox: [{ p, albumId, albumMeta }]
+let currentIdx  = 0;
 
 /* ══════════════════════════════════════
    DATA LOADING
@@ -96,16 +50,55 @@ function extractPhotos(data) {
   return [];
 }
 
-function loadData() {
-  Promise.all(
-    ALBUMS.map(album =>
-      fetch(album.jsonUrl)
+async function loadData() {
+  // 1. Fetch /data/index.json — biết có những năm nào
+  try {
+    YEARS = await fetch(`${BASE_URL}/data/index.json`).then(r => r.json());
+  } catch {
+    YEARS = ['2026'];
+  }
+  currentYear = YEARS[YEARS.length - 1]; // phần tử cuối = năm mới nhất
+
+  // 2. Fetch /data/{year}/index.json — danh sách album + metadata
+  try {
+    ALBUMS = await fetch(`${BASE_URL}/data/${currentYear}/index.json`).then(r => r.json());
+  } catch {
+    ALBUMS = [];
+  }
+
+  // 3. Fetch tất cả file JSON album của năm hiện tại
+  await Promise.all(
+    ALBUMS.map(album => {
+      const id = albumFileToId(album.file);
+      return fetch(`${BASE_URL}/data/${currentYear}/albums/${album.file}`)
         .then(r => r.json())
-        .then(d => { albumData[album.id] = extractPhotos(d); })
-        .catch(() => { albumData[album.id] = []; })
-    )
-  ).then(() => { buildAllSections(); buildSuggestions(); });
+        .then(d => { albumData[id] = extractPhotos(d); })
+        .catch(() => { albumData[id] = []; });
+    })
+  );
+
+  // 4. Gộp và shuffle toàn bộ ảnh cho Home
+  buildAllPhotos();
+
+  // 5. Render
+  buildHomeGallery();
+  buildSuggestions();
+  buildSettingsAlbumList();
 }
+
+function buildAllPhotos() {
+  const flat = ALBUMS.flatMap(album => {
+    const id = albumFileToId(album.file);
+    return (albumData[id] || []).map(p => ({ p, albumId: id, albumMeta: album }));
+  });
+  // Fisher-Yates shuffle
+  for (let i = flat.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [flat[i], flat[j]] = [flat[j], flat[i]];
+  }
+  allPhotos = flat;
+}
+
 loadData();
 
 /* ══════════════════════════════════════
@@ -116,25 +109,20 @@ function buildSettingsAlbumList() {
   if (!list) return;
   list.innerHTML = '';
   ALBUMS.forEach(album => {
-    const photos = albumData[album.id] || [];
-    const item = document.createElement('div');
+    const id     = albumFileToId(album.file);
+    const photos = albumData[id] || [];
+    const item   = document.createElement('div');
     item.className = 'settings-album-item';
-    item.innerHTML = `
-      <span>${album.emoji} ${album.title}</span>
-      <span class="settings-album-count">${photos.length} ảnh</span>`;
-    item.addEventListener('click', () => scrollToAlbum(album.id));
+    const titleEl = document.createElement('span');
+    titleEl.textContent = `${album.emoji} ${album.title}`;
+    const countEl = document.createElement('span');
+    countEl.className = 'settings-album-count';
+    countEl.textContent = `${photos.length} ảnh`;
+    item.appendChild(titleEl);
+    item.appendChild(countEl);
+    item.addEventListener('click', () => { closeSettings(); openAlbumView(album); });
     list.appendChild(item);
   });
-}
-
-function scrollToAlbum(id) {
-  closeSettings();
-  setTimeout(() => {
-    const target = $(id);
-    if (!target) return;
-    const y = target.getBoundingClientRect().top + window.scrollY - 16;
-    window.scrollTo({ top: y, behavior: 'smooth' });
-  }, 220); // wait for settings close animation
 }
 
 /* ══════════════════════════════════════
@@ -149,64 +137,210 @@ const cardObserver = new IntersectionObserver((entries, obs) => {
   });
 }, { rootMargin: '200px' });
 
-function buildAllSections() {
+function makeCard(p, i, onClickFn) {
+  const card = document.createElement('div');
+  card.className = 'photo-card';
+  card.style.animationDelay = `${Math.min(i * 0.04, 0.6)}s`;
+  const eager = i < 12;
+  const img = document.createElement('img');
+  if (eager) img.src = p.url; else img.dataset.src = p.url;
+  img.alt = p.name;
+  img.loading = 'lazy';
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'photo-name';
+  nameSpan.textContent = p.name;
+  overlay.appendChild(nameSpan);
+  card.appendChild(img);
+  card.appendChild(overlay);
+  card.addEventListener('click', onClickFn);
+  if (!eager) cardObserver.observe(card);
+  return card;
+}
+
+/* ══════════════════════════════════════
+   HOME — ảnh random, không chia album
+══════════════════════════════════════ */
+function buildHomeGallery() {
+  $('sb-home')?.classList.add('active');
+  $('sb-albums')?.classList.remove('active');
+
   const container = $('albums-container');
   if (!container) return;
   container.innerHTML = '';
-  ALBUMS.forEach(album => {
-    const photos  = albumData[album.id] || [];
-    const section = document.createElement('div');
-    section.className = 'album-section';
-    section.id = album.id;
-    section.innerHTML = `
-      <div class="album-header">
-        <div class="album-info">
-          <div class="album-title">${album.emoji} ${album.title}</div>
-          <div class="album-date">${album.date}</div>
-        </div>
-        <span class="album-count">${photos.length} ảnh</span>
-      </div>
-      <hr class="album-divider"/>
-      <div class="gallery" id="gallery-${album.id}"></div>
-      <div class="empty"   id="empty-${album.id}">Không tìm thấy ảnh nào 😔</div>`;
-    container.appendChild(section);
-    renderGallery(album.id, photos);
-  });
-  buildSettingsAlbumList();
-}
 
-function renderGallery(albumId, photos) {
-  const gallery = $(`gallery-${albumId}`);
-  const empty   = $(`empty-${albumId}`);
-  if (!gallery) return;
-  gallery.innerHTML = '';
-  if (!photos.length) { if (empty) empty.style.display = 'block'; return; }
-  if (empty) empty.style.display = 'none';
+  if (!allPhotos.length) {
+    container.innerHTML = '<p class="empty" style="display:block;color:rgba(255,255,255,.4)">Không có ảnh nào 😔</p>';
+    return;
+  }
+
+  const gallery = document.createElement('div');
+  gallery.className = 'gallery';
+  gallery.id = 'home-gallery';
+
   const frag = document.createDocumentFragment();
-  photos.forEach((img, i) => {
-    const card = document.createElement('div');
-    card.className = 'photo-card';
-    card.style.animationDelay = `${Math.min(i * 0.04, 0.6)}s`;
-    // First 12 load immediately, rest via observer
-    const eager = i < 12;
-    card.innerHTML = `<img ${eager ? `src="${img.url}"` : `data-src="${img.url}"`} alt="${img.name}" loading="lazy"/>
-      <div class="overlay"><span class="photo-name">${img.name}</span></div>`;
-    card.addEventListener('click', () => { filtered = photos; currentIdx = i; openLb(); });
-    if (!eager) cardObserver.observe(card);
+  allPhotos.forEach(({ p }, i) => {
+    const card = makeCard(p, i, () => {
+      filtered   = allPhotos;
+      currentIdx = i;
+      openLb();
+    });
     frag.appendChild(card);
   });
   gallery.appendChild(frag);
+  container.appendChild(gallery);
+}
+
+/* ══════════════════════════════════════
+   ALBUMS PAGE — danh sách album
+══════════════════════════════════════ */
+function openAlbumsPage() {
+  $('sb-albums')?.classList.add('active');
+  $('sb-home')?.classList.remove('active');
+
+  const container = $('albums-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // Nút chọn năm — chỉ hiện nếu có nhiều hơn 1 năm
+  if (YEARS.length > 1) {
+    const yearBar = document.createElement('div');
+    yearBar.className = 'year-bar';
+    YEARS.slice().reverse().forEach(yr => {
+      const btn = document.createElement('button');
+      btn.className = 'year-btn' + (yr === currentYear ? ' active' : '');
+      btn.textContent = yr;
+      btn.addEventListener('click', () => {
+        // Placeholder — xử lý khi có data năm 2027+
+      });
+      yearBar.appendChild(btn);
+    });
+    container.appendChild(yearBar);
+  }
+
+  // Grid album
+  const grid = document.createElement('div');
+  grid.className = 'albums-grid';
+
+  ALBUMS.forEach(album => {
+    const id     = albumFileToId(album.file);
+    const photos = albumData[id] || [];
+    const covers = photos.slice(0, 3);
+
+    const card = document.createElement('div');
+    card.className = 'album-card';
+
+    const coversDiv = document.createElement('div');
+    coversDiv.className = 'album-card-covers';
+    covers.forEach(p => {
+      const img = document.createElement('img');
+      img.src = p.url; img.loading = 'lazy';
+      coversDiv.appendChild(img);
+    });
+
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'album-card-info';
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'album-card-title';
+    titleDiv.textContent = `${album.emoji} ${album.title}`;
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'album-card-meta';
+    const dateSpan = document.createElement('span');
+    dateSpan.className = 'album-card-date';
+    dateSpan.textContent = album.date;
+    const countSpan = document.createElement('span');
+    countSpan.className = 'album-card-count';
+    countSpan.textContent = `${photos.length} ảnh`;
+    metaDiv.appendChild(dateSpan);
+    metaDiv.appendChild(countSpan);
+    infoDiv.appendChild(titleDiv);
+    infoDiv.appendChild(metaDiv);
+
+    card.appendChild(coversDiv);
+    card.appendChild(infoDiv);
+    card.addEventListener('click', () => openAlbumView(album));
+    grid.appendChild(card);
+  });
+
+  container.appendChild(grid);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══════════════════════════════════════
+   ALBUM DETAIL VIEW — ảnh của 1 album
+══════════════════════════════════════ */
+function openAlbumView(albumMeta) {
+  const id     = albumFileToId(albumMeta.file);
+  const photos = albumData[id] || [];
+  const container = $('albums-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // Header với nút back
+  const header = document.createElement('div');
+  header.className = 'album-header';
+
+  const backBtn = document.createElement('button');
+  backBtn.className = 'album-back-btn';
+  backBtn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="15" height="15"><polyline points="15 18 9 12 15 6"/></svg> Albums`;
+  backBtn.addEventListener('click', openAlbumsPage);
+
+  const infoDiv = document.createElement('div');
+  infoDiv.className = 'album-info';
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'album-title';
+  titleDiv.textContent = `${albumMeta.emoji} ${albumMeta.title}`;
+  const dateDiv = document.createElement('div');
+  dateDiv.className = 'album-date';
+  dateDiv.textContent = albumMeta.date;
+  infoDiv.appendChild(titleDiv);
+  infoDiv.appendChild(dateDiv);
+
+  const countSpan = document.createElement('span');
+  countSpan.className = 'album-count';
+  countSpan.textContent = `${photos.length} ảnh`;
+
+  header.appendChild(backBtn);
+  header.appendChild(infoDiv);
+  header.appendChild(countSpan);
+  container.appendChild(header);
+
+  const divider = document.createElement('hr');
+  divider.className = 'album-divider';
+  container.appendChild(divider);
+
+  const gallery = document.createElement('div');
+  gallery.className = 'gallery';
+
+  const albumFiltered = photos.map(ph => ({ p: ph, albumId: id, albumMeta }));
+
+  const frag = document.createDocumentFragment();
+  photos.forEach((p, i) => {
+    const card = makeCard(p, i, () => {
+      filtered   = albumFiltered;
+      currentIdx = i;
+      openLb();
+    });
+    frag.appendChild(card);
+  });
+  gallery.appendChild(frag);
+  container.appendChild(gallery);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ══════════════════════════════════════
    LIGHTBOX + PRELOAD
 ══════════════════════════════════════ */
 const _preloadCache = new Set();
+
 function preloadAround(idx) {
   [-1, 1, 2].forEach(offset => {
-    const n = filtered.length;
-    const i = ((idx + offset) % n + n) % n;
-    const src = filtered[i]?.full || filtered[i]?.url;
+    const n   = filtered.length;
+    const i   = ((idx + offset) % n + n) % n;
+    const item = filtered[i];
+    const src  = item?.p?.full || item?.p?.url;
     if (!src || _preloadCache.has(src)) return;
     _preloadCache.add(src);
     new Image().src = src;
@@ -214,28 +348,72 @@ function preloadAround(idx) {
 }
 
 function openLb()  { updateLb(); $('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
-function closeLb() { $('lightbox').classList.remove('active'); document.body.style.overflow = ''; }
+function closeLb() {
+  $('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+  closeInfoPopup();
+}
 function navLb(dir) {
   currentIdx = (currentIdx + dir + filtered.length) % filtered.length;
+  closeInfoPopup();
   updateLb();
 }
+
 function updateLb() {
-  const img = filtered[currentIdx];
-  const el  = $('lb-img');
+  const item = filtered[currentIdx]; if (!item) return;
+  const { p, albumMeta } = item;
+  const el = $('lb-img');
   el.classList.remove('zoomed');
+
   const zb = $('zoom-btn');
   if (zb) {
     zb.querySelector('svg').innerHTML = '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>';
     zb.childNodes[zb.childNodes.length - 1].textContent = ' Phóng to';
   }
+
   el.style.animation = 'none'; el.offsetHeight; el.style.animation = 'zoomIn .25s ease';
-  el.src = img.full || img.url; el.alt = img.name;
-  $('lb-name').textContent    = img.name;
+  el.src = p.full || p.url; el.alt = p.name;
+  $('lb-name').textContent    = p.name;
   $('lb-counter').textContent = `${currentIdx + 1} / ${filtered.length}`;
+
   const dl = $('lb-download');
-  dl.href = img.full || img.url; dl.download = img.name + '.jpg';
+  dl.href = p.full || p.url; dl.download = p.name + '.jpg';
+
+  // Cập nhật popup info nếu đang mở
+  if ($('lb-info-popup')?.classList.contains('open')) renderInfoPopup(p, albumMeta);
+
   preloadAround(currentIdx);
 }
+
+/* ── INFO POPUP ── */
+function toggleInfoPopup() {
+  const popup = $('lb-info-popup'); if (!popup) return;
+  const isOpen = popup.classList.toggle('open');
+  $('info-btn')?.classList.toggle('active', isOpen);
+  if (isOpen) {
+    const item = filtered[currentIdx];
+    if (item) renderInfoPopup(item.p, item.albumMeta);
+  }
+}
+function closeInfoPopup() {
+  $('lb-info-popup')?.classList.remove('open');
+  $('info-btn')?.classList.remove('active');
+}
+function renderInfoPopup(p, albumMeta) {
+  const popup = $('lb-info-popup'); if (!popup) return;
+  const albumName = albumMeta ? `${albumMeta.emoji} ${albumMeta.title}` : '—';
+  popup.innerHTML = `
+    <div class="info-row">
+      <span class="info-label">Album</span>
+      <span class="info-value">${escapeHtml(albumName)}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Ảnh</span>
+      <span class="info-value">${escapeHtml(p.name)}</span>
+    </div>`;
+}
+
+/* ── ZOOM ── */
 function toggleZoom() {
   const img = $('lb-img'), btn = $('zoom-btn');
   const z = img.classList.toggle('zoomed');
@@ -256,7 +434,7 @@ document.addEventListener('keydown', e => {
 });
 $('lightbox')?.addEventListener('click', e => { if (e.target === $('lightbox')) closeLb(); });
 
-// Swipe to navigate lightbox on mobile
+// Swipe lightbox trên mobile
 ;(function() {
   const lb = $('lightbox'); if (!lb) return;
   let sx = 0, sy = 0;
@@ -269,32 +447,33 @@ $('lightbox')?.addEventListener('click', e => { if (e.target === $('lightbox')) 
 })();
 
 /* ══════════════════════════════════════
-   SEARCH  (debounced 200ms)
+   SEARCH
 ══════════════════════════════════════ */
-function getAllPhotos() {
-  return ALBUMS.flatMap(album =>
-    (albumData[album.id] || []).map(p => ({ p, label: `${album.emoji} ${album.title}`, albumId: album.id }))
-  );
+function getAllPhotosFlat() {
+  return ALBUMS.flatMap(album => {
+    const id = albumFileToId(album.file);
+    return (albumData[id] || []).map(p => ({
+      p,
+      label:     `${album.emoji} ${album.title}`,
+      albumId:   id,
+      albumMeta: album,
+    }));
+  });
 }
 
 $('sb-search-input')?.addEventListener('input', debounce(function() {
-  const q = $('sb-search-input').value.trim().toLowerCase();
-  const res = $('sb-results'), sugg = $('sb-suggestions');
+  const q    = $('sb-search-input').value.trim().toLowerCase();
+  const res  = $('sb-results'), sugg = $('sb-suggestions');
   if (!q) { res.style.display = 'none'; res.innerHTML = ''; sugg.style.display = 'flex'; return; }
   res.style.display = 'flex'; sugg.style.display = 'none';
 
-  // Normalize query: extract pure number if user types e.g. "49" or "049"
-  const qNum = q.replace(/[^0-9]/g, ''); // digits only from query
-
-  const hits = getAllPhotos().filter(({ p }) => {
+  const qNum = q.replace(/[^0-9]/g, '');
+  const hits = getAllPhotosFlat().filter(({ p }) => {
     const name = p.name.toLowerCase();
     if (name.includes(q)) return true;
-    // If query contains digits, also match against the number in the name
     if (qNum) {
-      const nameNum = name.replace(/[^0-9]/g, ''); // digits from name e.g. "049"
-      // Match: "49" matches "049" (parseInt strips leading zeros)
+      const nameNum = name.replace(/[^0-9]/g, '');
       if (nameNum && parseInt(nameNum, 10) === parseInt(qNum, 10)) return true;
-      // Also match substring: "4" matches "049", "146", etc.
       if (nameNum.includes(qNum)) return true;
     }
     return false;
@@ -302,12 +481,24 @@ $('sb-search-input')?.addEventListener('input', debounce(function() {
 
   if (!hits.length) { res.innerHTML = '<p class="sb-sr-hint">Không tìm thấy 😔</p>'; return; }
   const frag = document.createDocumentFragment();
-  hits.slice(0, 50).forEach(({ p, label, albumId }) => {
+  hits.slice(0, 50).forEach(({ p, label, albumId, albumMeta }) => {
     const el = document.createElement('div');
     el.className = 'sb-sr-item';
-    el.innerHTML = `<img src="${p.url}" alt="${p.name}" loading="lazy"/>
-      <div><div class="sb-sr-name">${p.name}</div><div class="sb-sr-album">${label}</div></div>`;
-    el.addEventListener('click', () => { filtered = albumData[albumId]; currentIdx = filtered.indexOf(p); openLb(); });
+    const img = document.createElement('img');
+    img.src = p.url; img.alt = p.name; img.loading = 'lazy';
+    const info = document.createElement('div');
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'sb-sr-name'; nameDiv.textContent = p.name;
+    const albumDiv = document.createElement('div');
+    albumDiv.className = 'sb-sr-album'; albumDiv.textContent = label;
+    info.appendChild(nameDiv); info.appendChild(albumDiv);
+    el.appendChild(img); el.appendChild(info);
+    el.addEventListener('click', () => {
+      const photos = albumData[albumId] || [];
+      filtered   = photos.map(ph => ({ p: ph, albumId, albumMeta }));
+      currentIdx = photos.indexOf(p);
+      openLb();
+    });
     frag.appendChild(el);
   });
   res.innerHTML = ''; res.appendChild(frag);
@@ -321,20 +512,32 @@ let carouselIdx = 0, carouselItems = [];
 function buildSuggestions() {
   const track = $('sb-suggest-track'), dotsEl = $('sb-suggest-dots');
   if (!track) return;
-  carouselItems = getAllPhotos().sort(() => Math.random() - .5).slice(0, 4);
+  carouselItems = getAllPhotosFlat().sort(() => Math.random() - .5).slice(0, 4);
   carouselIdx   = 0;
   track.innerHTML = '';
-  carouselItems.forEach(({ p, label, albumId }) => {
+
+  carouselItems.forEach(({ p, label, albumId, albumMeta }) => {
     const slide = document.createElement('div');
     slide.className = 'sb-suggest-slide';
-    slide.innerHTML = `<img src="${p.url}" loading="lazy"/>
-      <div class="sb-suggest-caption">
-        <div class="sb-suggest-album">${label}</div>
-        <div class="sb-suggest-name">${p.name}</div>
-      </div>`;
-    slide.addEventListener('click', () => { filtered = albumData[albumId]; currentIdx = filtered.indexOf(p); openLb(); });
+    const img = document.createElement('img');
+    img.src = p.url; img.loading = 'lazy';
+    const caption = document.createElement('div');
+    caption.className = 'sb-suggest-caption';
+    const albumEl = document.createElement('div');
+    albumEl.className = 'sb-suggest-album'; albumEl.textContent = label;
+    const nameEl = document.createElement('div');
+    nameEl.className = 'sb-suggest-name'; nameEl.textContent = p.name;
+    caption.appendChild(albumEl); caption.appendChild(nameEl);
+    slide.appendChild(img); slide.appendChild(caption);
+    slide.addEventListener('click', () => {
+      const photos = albumData[albumId] || [];
+      filtered   = photos.map(ph => ({ p: ph, albumId, albumMeta }));
+      currentIdx = photos.indexOf(p);
+      openLb();
+    });
     track.appendChild(slide);
   });
+
   const fc = track.firstElementChild?.cloneNode(true);
   const lc = track.lastElementChild?.cloneNode(true);
   if (fc && lc) {
@@ -407,13 +610,16 @@ function closeSettings() {
   $('settings-popup').classList.remove('open');
   $('sb-settings').classList.remove('active');
 }
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  buildHomeGallery();
+}
 
 document.addEventListener('click', e => {
   const popup = $('settings-popup'), settBtn = $('sb-settings');
-  if (settingsOpen && !popup.contains(e.target) && !settBtn.contains(e.target)) closeSettings();
+  if (settingsOpen && !popup?.contains(e.target) && !settBtn?.contains(e.target)) closeSettings();
   const panel = $('sb-panel'), srchBtn = $('sb-search');
-  if (panelOpen && window.innerWidth <= 768 && !panel.contains(e.target) && !srchBtn.contains(e.target)) {
+  if (panelOpen && window.innerWidth <= 768 && !panel?.contains(e.target) && !srchBtn?.contains(e.target)) {
     panelOpen = false; panel.classList.remove('open'); srchBtn.classList.remove('active');
   }
 });
@@ -431,7 +637,7 @@ function applyTheme(isDark) {
 function setAutoplay(e) { localStorage.setItem('autoplay', e ? 'on' : 'off'); }
 function setSidebarRight(e) { document.body.classList.toggle('sidebar-right', e); localStorage.setItem('sidebarRight', e ? 'on' : 'off'); }
 (function() {
-  const t = $('autoplay-toggle'); if (t) t.checked = localStorage.getItem('autoplay') !== 'off';
+  const t  = $('autoplay-toggle'); if (t) t.checked = localStorage.getItem('autoplay') !== 'off';
   const sr = localStorage.getItem('sidebarRight') === 'on';
   if (sr) document.body.classList.add('sidebar-right');
   const rt = $('rightsb-toggle'); if (rt) rt.checked = sr;
