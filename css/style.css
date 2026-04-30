@@ -491,6 +491,28 @@ footer a:hover { opacity: .75; }
 .footer-projects-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .footer-projects-links a { font-size: 13px; color: var(--accent); text-decoration: none; padding: 5px 14px; border-radius: 100px; border: 1px solid rgba(59,191,176,.25); transition: all .2s; }
 .footer-projects-links a:hover { background: rgba(59,191,176,.1); }
+/* lass dark hoặc thuộc tính bạn dùng để kích hoạt Dark Mode */
+body.dark-mode footer {
+    background: rgba(15, 18, 20, .8); /* Màu tối gần giống Sidebar */
+    color: rgba(255, 255, 255, .5);   /* Chữ mờ đi cho dịu mắt */
+    backdrop-filter: blur(12px);      /* Tăng độ mờ nền cho nghệ */
+    border-top: 1px solid rgba(255, 255, 255, .05);
+}
+
+body.dark-mode .footer-projects {
+    border-top: 1px solid rgba(255, 255, 255, .05);
+}
+
+/* Dự án Nux/Underave Dark Mode */
+body.dark-mode .footer-projects-links a {
+    color: var(--accent);
+    border: 1px solid rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, .02);
+}
+
+body.dark-mode .footer-projects-links a:hover {
+    background: rgba(59, 191, 176, .15); /* Màu hover đặc trưng của bạn */
+}
 
 /* ═══════════════════════════════
    ALBUM BACK BUTTON
