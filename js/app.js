@@ -647,6 +647,7 @@ function setSidebarRight(e) { document.body.classList.toggle('sidebar-right', e)
    MUSIC PLAYER
 ══════════════════════════════════════ */
 const TRACKS = [
+  { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1777554981/pdheicppbdxl8t2lryyn.mp3' },
   { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1774274445/ypnxtx3d0yio7tgkbuai.mp3' },
   { src: 'https://res.cloudinary.com/dlrax6e5x/video/upload/v1774274730/kmwdpqkvfncgwqeuusps.mp3' },
 ];
