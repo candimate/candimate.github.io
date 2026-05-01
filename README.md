@@ -3,7 +3,7 @@
 Candimate là một nền tảng Web App mã nguồn mở chuyên dụng cho việc lưu trữ và trình diễn kho ảnh quy mô lớn. Dự án tập trung vào **hiệu năng tối đa (Ultra Lite)**, **kiến trúc dữ liệu phân cấp** và **trải nghiệm UI/UX mượt mà** dựa trên ngôn ngữ thiết kế Fluent UI.
 
 ![Version](https://img.shields.io/badge/Version-2026.3-00f2fe?style=for-the-badge)
-![License](https://img.shields.io/badge/License-Open_Source-green?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT License-green?style=for-the-badge)
 ![UI](https://img.shields.io/badge/UI-Glassmorphism-blue?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Platform-GitHub_Pages-black?style=for-the-badge)
 
