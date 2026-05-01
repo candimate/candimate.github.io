@@ -22,7 +22,7 @@ function albumFileToId(file) {
 
 /* ── WALLPAPERS ── */
 const WALLPAPERS = [
-  `${BASE_URL}/national_day.jpg`,
+  `${BASE_URL}/cap-1.jpg`,
   `${BASE_URL}/national_day1.jpg`,
 ];
 (function initWallpaper() {
