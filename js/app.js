@@ -22,8 +22,8 @@ function albumFileToId(file) {
 
 /* ── WALLPAPERS ── */
 const WALLPAPERS = [
-  `${BASE_URL}/cap-1.jpg`,
-  `${BASE_URL}/cap2.jpg`,
+  `${BASE_URL}/national_day.jpg`,
+  `${BASE_URL}/national_day1.jpg`,
 ];
 (function initWallpaper() {
   const url = WALLPAPERS[Math.floor(Math.random() * WALLPAPERS.length)];
@@ -700,38 +700,3 @@ musicBtn.addEventListener('touchstart', () => { if (window.innerWidth <= 768) lp
 musicBtn.addEventListener('touchend',  () => clearTimeout(lpTimer));
 musicBtn.addEventListener('touchmove', () => clearTimeout(lpTimer));
 document.addEventListener('click', e => { if (pickerOpen && !$('music-picker').contains(e.target) && !musicBtn.contains(e.target)) togglePicker(false); });
-
-/* ══════════════════════════════════════
-   NOTICE POPUP
-══════════════════════════════════════ */
-const NOTICE_VERSION = 'notice_v1'; // Đổi thành notice_v2, v3... khi có thông báo mới
-
-function openNotice() {
-  const overlay = $('notice-overlay');
-  if (!overlay) return;
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeNotice() {
-  const overlay = $('notice-overlay');
-  if (!overlay) return;
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
-  // Dừng video khi đóng
-  const video = overlay.querySelector('video');
-  if (video) { video.pause(); }
-  // Lưu version đã đọc vào localStorage
-  localStorage.setItem(NOTICE_VERSION, 'seen');
-}
-
-// Đóng khi click vào overlay bên ngoài card
-$('notice-overlay')?.addEventListener('click', e => {
-  if (e.target === $('notice-overlay')) closeNotice();
-});
-
-// Hiện sau 1 giây nếu user chưa đọc version này
-(function initNotice() {
-  if (localStorage.getItem(NOTICE_VERSION) === 'seen') return;
-  setTimeout(openNotice, 1000);
-})();
